@@ -171,5 +171,6 @@ MonoBehaviour:
   - {fileID: -4431274013790139526, guid: 2b22e58cf7fbd7946b874f61d6cbbebc, type: 3}
   - {fileID: 7777898413560165094, guid: 2b22e58cf7fbd7946b874f61d6cbbebc, type: 3}
   HealthText: {fileID: 0}
+  GoldCounterText: {fileID: 0}
   GameOverText: {fileID: 0}
   BlackBackground: {fileID: 0}

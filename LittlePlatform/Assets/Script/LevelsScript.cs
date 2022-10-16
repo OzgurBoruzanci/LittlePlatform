@@ -24,7 +24,7 @@ public class LevelsScript : MonoBehaviour
         //Level5.GetComponent<Button>().interactable = false;
         //Level6.GetComponent<Button>().interactable = false;
         
-        Debug.Log(recordint);
+        
 
         for (int i = recordint+2; i < Canvas.transform.childCount; i++)
         {
@@ -70,7 +70,7 @@ public class LevelsScript : MonoBehaviour
         else
         {
             SceneManager.LoadScene(PlayerPrefs.GetInt("Record"));
-            Debug.Log("kayıtlı");
+            //Debug.Log("kayıtlı");
         }
         
     }

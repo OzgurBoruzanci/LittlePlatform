@@ -21,6 +21,7 @@ public class CharacterControl : MonoBehaviour
     int goldCounter = 0;
     //int JumpAnimationCounter = 0;
     int WalkingAnimationCounter = 0;
+    int HealthControl = 0;
 
     SpriteRenderer spriteRenderer;
     Rigidbody2D physics;
@@ -50,10 +51,19 @@ public class CharacterControl : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         physics = GetComponent<Rigidbody2D>();
         Camera = GameObject.FindGameObjectWithTag("MainCamera");
-
         CameraFirstPosition = Camera.transform.position - transform.position;
-        
-        HealthText.text = "Health : " + Health;
+        HealthControl = PlayerPrefs.GetInt("HealthControlRecord");
+        if (HealthControl==1)
+        {
+            Health = PlayerPrefs.GetInt("RecordHealth");
+            HealthText.text = "Health : " + Health;
+            
+        }
+        else
+        {
+            HealthText.text = "Health : " + Health;
+            
+        }
 
     }
 
@@ -77,6 +87,8 @@ public class CharacterControl : MonoBehaviour
         
         if (Health<=0)
         {
+            HealthControl = 0;
+            PlayerPrefs.SetInt("HealthControlRecord", HealthControl);
             Time.timeScale = 0.4f;
             HealthText.enabled = false;
             BlackBackgroundCounter += 0.03f;
@@ -203,13 +215,21 @@ public class CharacterControl : MonoBehaviour
             Health -= 50;
             HealthText.text = "Health : " + Health;
         }
+        if (col.gameObject.tag == "Knob")
+        {
+            Health -= 20;
+            HealthText.text = "Health : " + Health;
+        }
         if (col.gameObject.tag == "Finished")
         {
+            HealthControl = 1;
+            PlayerPrefs.SetInt("HealthControlRecord", HealthControl);
             PlayerPrefs.SetInt("RecordHealth", Health);
-            Health = PlayerPrefs.GetInt("RecordHealth");
             HealthText.text = "Health : " + Health;
             nextScene = int.Parse(SceneManager.GetActiveScene().name) + 1;
             SceneManager.LoadScene($"{nextScene}");
+            
+            
         }
         if (col.gameObject.tag == "10Health")
         {
