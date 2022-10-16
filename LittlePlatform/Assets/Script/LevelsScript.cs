@@ -70,6 +70,7 @@ public class LevelsScript : MonoBehaviour
         else
         {
             SceneManager.LoadScene(PlayerPrefs.GetInt("Record"));
+            Debug.Log("kayıtlı");
         }
         
     }

@@ -10,11 +10,15 @@ public class CharacterControl : MonoBehaviour
     public Sprite[] JumpAnimation;
     public Sprite[] WalkingAnimation;
     public Text HealthText;
+    public Text GoldCounterText;
     public Text GameOverText;
+    //public Text CompletedText;
     public Image BlackBackground;
+    //public Image GreenBackground;
     int Health = 100;
-
+    int nextScene;
     int WaitingAnimationCounter = 0;
+    int goldCounter = 0;
     //int JumpAnimationCounter = 0;
     int WalkingAnimationCounter = 0;
 
@@ -31,20 +35,26 @@ public class CharacterControl : MonoBehaviour
     float WaitingAnimationTime = 0;
     float WalkingAnimationTime = 0;
     float BlackBackgroundCounter = 0;
+    //float GreenBackgroundCounter = 0;
     float GameOverCounter = 0;
     float MainMenuTime = 0;
+    //float NextLevelTime = 0;
+    //float CompletedCounter = 0;
 
     GameObject Camera;
-
+    
     void Start()
     {
-        PlayerPrefs.GetInt("Record", int.Parse(SceneManager.GetActiveScene().name));
+        Time.timeScale = 1;
+        PlayerPrefs.SetInt("Record", int.Parse(SceneManager.GetActiveScene().name));
         spriteRenderer = GetComponent<SpriteRenderer>();
         physics = GetComponent<Rigidbody2D>();
         Camera = GameObject.FindGameObjectWithTag("MainCamera");
 
         CameraFirstPosition = Camera.transform.position - transform.position;
+        
         HealthText.text = "Health : " + Health;
+
     }
 
     void Update()
@@ -64,6 +74,7 @@ public class CharacterControl : MonoBehaviour
     {
         CharacterMovement();
         Animation();
+        
         if (Health<=0)
         {
             Time.timeScale = 0.4f;
@@ -72,6 +83,7 @@ public class CharacterControl : MonoBehaviour
             GameOverCounter += 0.01f;
             BlackBackground.color = new Color(0, 0, 0, BlackBackgroundCounter);
             GameOverText.text = "GAME OVER";
+            GoldCounterText.text= "GOLD : " + goldCounter;
             GameOverText.color = new Color(GameOverCounter, GameOverCounter, GameOverCounter);
             MainMenuTime += Time.deltaTime;
             if (MainMenuTime>1.3f)
@@ -79,6 +91,8 @@ public class CharacterControl : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         }
+        
+        
     }
 
     private void LateUpdate()
@@ -184,7 +198,75 @@ public class CharacterControl : MonoBehaviour
             Health -= 10;
             HealthText.text = "Health : " + Health;
         }
+        if (col.gameObject.tag == "Water")
+        {
+            Health -= 50;
+            HealthText.text = "Health : " + Health;
+        }
+        if (col.gameObject.tag == "Finished")
+        {
+            PlayerPrefs.SetInt("RecordHealth", Health);
+            Health = PlayerPrefs.GetInt("RecordHealth");
+            HealthText.text = "Health : " + Health;
+            nextScene = int.Parse(SceneManager.GetActiveScene().name) + 1;
+            SceneManager.LoadScene($"{nextScene}");
+        }
+        if (col.gameObject.tag == "10Health")
+        {
+            if (Health >= 90)
+            {
+                Health = 100;
+                HealthText.text = "Health : " + Health;
+            }
+            else
+            {
+                Health += 10;
+                HealthText.text = "Health : " + Health;
+            }
+            col.GetComponent<BoxCollider2D>().enabled = false;
+            col.GetComponent<GetHealth>().enabled = true;
+            Destroy(col.gameObject, 1.5f);
+
+        }
+        if (col.gameObject.tag == "Border")
+        {
+            Health = 0;
+            HealthText.text = "Health : " + Health;
+            
+        }
+        
+        if (col.gameObject.tag == "Gold")
+        {
+            goldCounter++;
+            GoldCounterText.text = "GOLD : " + goldCounter;
+            Destroy(col.gameObject);
+        }
+
+        //if (col.gameObject.tag == "Finished")
+        //{
+        //    CompletedText.text = "COMPLETED";
+        //    NextLevelTime += Time.deltaTime;
+        //    Debug.Log(Time.deltaTime);
+        //    Debug.Log(NextLevelTime);
+        //    if (NextLevelTime > 0.02f)
+        //    {
+        //        nextScene = int.Parse(SceneManager.GetActiveScene().name) + 1;
+        //        SceneManager.LoadScene($"{nextScene}");
+        //    }
+        //}
     }
+
+
+    //void NextLevelAnim()
+    //{
+    //    Time.timeScale = 0.4f;
+    //    HealthText.enabled = false;
+    //    CompletedCounter += 0.01f;
+    //    CompletedText.text = "COMPLETED";
+    //    CompletedText.color = new Color(CompletedCounter, CompletedCounter, CompletedCounter);
+    //    GreenBackgroundCounter += 0.03f;
+    //    GreenBackground.color = new Color(45, 190, 40, GreenBackgroundCounter);
+    //}
 
     void CameraControl()
     {

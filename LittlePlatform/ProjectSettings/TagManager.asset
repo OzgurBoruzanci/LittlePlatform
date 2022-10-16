@@ -7,6 +7,12 @@ TagManager:
   - Mace
   - Saw
   - Bullet
+  - Water
+  - Finished
+  - 10Health
+  - Border
+  - Gold
+  - Knob
   layers:
   - Default
   - TransparentFX
